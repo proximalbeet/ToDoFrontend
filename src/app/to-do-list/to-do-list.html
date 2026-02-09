@@ -1,1 +1,83 @@
-<p>to-do-list works!</p>
+<!doctype html>
+<html>
+<body>
+<h1>{{ title }}</h1>
+
+<table>
+  <tr>
+    <!-- Left column: filters -->
+    <td valign="top">
+      <label>
+        Category
+        <select [(ngModel)]="filterCategory">
+          <option value="">All</option>
+          <option value="Home">Home</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Contact">Contact</option>
+          <option value="Work">Work</option>
+        </select>
+      </label>
+      <br />
+
+      <label>
+        Due
+        <select [(ngModel)]="filterDue">
+          <option value="">All</option>
+          <option value="overdue">Overdue</option>
+          <option value="today">Today</option>
+          <option value="week">This week</option>
+          <option value="later">Later</option>
+        </select>
+      </label>
+      <br />
+
+      <label>
+        Status
+        <select [(ngModel)]="filterStatus">
+          <option value="">All</option>
+          <option value="Open">Open</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </label>
+      <br />
+      <button (click)="applyFilters()">Filter</button>
+      <button (click)="clearFilters()">Clear</button>
+    </td>
+
+    <!-- Right column: task table -->
+    <td valign="top">
+      <table>
+        <thead>
+        <tr>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Priority</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let task of tasks; trackBy: trackById" [attr.data-id]="task.id">
+          <td>{{ task.description }}</td>
+          <td>{{ task.category }}</td>
+          <td>{{ task.priority }}</td>
+          <td>{{ task.dueDate | date:'shortDate' }}</td>
+          <td>{{ task.status }}</td>
+          <td>
+            <button *ngIf="task.status !== 'Completed'" (click)="markCompleted(task)">Mark Completed</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- Bottom buttons -->
+      <div>
+        <button (click)="addNewTask()">Add new task</button>
+        <button (click)="deleteCompletedTasks()">Delete completed tasks</button>
+      </div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
