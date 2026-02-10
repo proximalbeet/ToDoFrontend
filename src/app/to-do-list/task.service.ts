@@ -6,6 +6,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {map} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -17,15 +18,27 @@ export class TaskService {
   constructor(private http: HttpClient) {}
 
   getTasks() {
-    return this.http.get(this.apiUrl);
+    return this.http.get<any>(this.apiUrl).pipe(
+      map((items: any[]) =>
+        items.map(item => ({
+          id: item.id,
+          description: item.description,
+          category: item.category,
+          priority: item.priority,
+          dueDate: item.dueDate ? new Date(item.dueDate) : null,
+          status: item.status,
+          overDue: item.overDue
+        }))
+      )
+    );
   }
 
   addNewTask(task: any) {
-    return this.http.post(this.apiUrl, task);
+    return this.http.post<any>(this.apiUrl, task);
   }
 
   markCompleted(id: string) {
-    return this.http.post(`${this.apiUrl}/ToDo/${id}/complete`, {});
+    return this.http.put(`${this.apiUrl}/${id}/complete`, {});
   }
 
   deleteCompletedTasks() {

@@ -7,10 +7,11 @@ import {DatePipe} from "@angular/common";
   selector: 'app-to-do-list',
   imports: [
     FormsModule,
-    DatePipe
+    DatePipe,
   ],
   templateUrl: './to-do-list.html',
   styleUrl: './to-do-list.css',
+  standalone: true
 })
 export class ToDoList {
   protected title = 'My Tasks';
@@ -20,16 +21,19 @@ export class ToDoList {
   protected filterDue: any;
   protected filterStatus: any;
 
-  protected tasks: Object = [];
+  protected tasks: any[] = [];
 
+  protected newDescription: any;
+  protected newCategory: any;
+  protected newDueDate: any;
   protected newTaskPriority: any;
+
+  constructor(private taskService: TaskService) {}
+
   ngOnInit() {
     this.loadTasks();
   }
 
-  constructor(private taskService: TaskService) {}
-
-  // ⭐ NEW: call backend and fill tasks[]
   protected loadTasks() {
     this.taskService.getTasks().subscribe(data => {
       this.tasks = data;
@@ -48,9 +52,9 @@ export class ToDoList {
 
   protected addNewTask() {
     const newTask = {
-      description: '',   // you will fill this later
-      category: '',
-      dueDate: null,
+      description: this.newDescription,
+      category: this.newCategory,
+      dueDate: this.newDueDate,
       status: 'Open',
       priority: this.newTaskPriority
     };
@@ -62,7 +66,7 @@ export class ToDoList {
 
   protected deleteCompletedTasks() {
     this.taskService.deleteCompletedTasks().subscribe(() => {
-      this.loadTasks(); // refresh table
+      this.loadTasks();
     });
   }
 

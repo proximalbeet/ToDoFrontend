@@ -1,6 +1,3 @@
-<!doctype html>
-<html>
-<body>
 <h1>{{ title }}</h1>
 
 <table>
@@ -54,20 +51,26 @@
           <th>Priority</th>
           <th>Due Date</th>
           <th>Status</th>
-          <th>Action</th>
+          <th>Overdue</th>
+          <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let task of tasks; trackBy: trackById" [attr.data-id]="task.id">
-          <td>{{ task.description }}</td>
-          <td>{{ task.category }}</td>
-          <td>{{ task.priority }}</td>
-          <td>{{ task.dueDate | date:'shortDate' }}</td>
-          <td>{{ task.status }}</td>
-          <td>
-            <button *ngIf="task.status !== 'Completed'" (click)="markCompleted(task)">Mark Completed</button>
-          </td>
-        </tr>
+          @for (task of tasks; track task.id) {
+            <tr>
+              <td>{{ task.description }}</td>
+              <td>{{ task.category }}</td>
+              <td>{{ task.priority }}</td>
+              <td>{{ task.dueDate | date:'shortDate' }}</td>
+              <td>{{ task.status }}</td>
+              <td>{{ task.overDue ? 'Yes' : 'No' }}</td>
+              <td>
+                @if (task.status !== 'Completed') {
+                  <button (click)="markCompleted(task)">Mark Completed</button>
+                }
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
 
@@ -79,5 +82,33 @@
     </td>
   </tr>
 </table>
-</body>
-</html>
+
+<div style="margin-top: 20px;">
+  <h3>Add New Task</h3>
+
+  <label>Description:
+    <input [(ngModel)]="newDescription">
+  </label>
+  <br>
+
+  <label>Category:
+    <input [(ngModel)]="newCategory">
+  </label>
+  <br>
+
+  <label>Due Date:
+    <input type="date" [(ngModel)]="newDueDate">
+  </label>
+  <br>
+
+  <label>Priority:
+    <select [(ngModel)]="newTaskPriority">
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
+  </label>
+  <br>
+
+  <button (click)="addNewTask()">Save Task</button>
+</div>
